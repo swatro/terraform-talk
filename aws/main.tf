@@ -11,9 +11,10 @@ terraform {
   }
 }
 
-output "public_ip" {
-  value = "${aws_instance.example.public_ip}"
+output "public_ips" {
+  value = "${aws_instance.example.*.public_ip}"
 }
+
 
 resource "aws_security_group" "instance" {
   name = "terraform-example-instance"
@@ -46,6 +47,7 @@ resource "aws_instance" "example" {
   instance_type = "t2.micro"
   iam_instance_profile = "test_profile"
   vpc_security_group_ids = ["${aws_security_group.instance.id}"]
+  count = 2
 
   user_data = <<-EOF
               #!/bin/bash
